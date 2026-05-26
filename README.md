@@ -128,6 +128,22 @@ della repo e modificare la riga `@match` di conseguenza. Esempi:
 - **Session:** il `managerId` nell'URL è la sessione SIRJ; quando scade,
   SIRJ apre automaticamente una nuova tab con un manager fresco
 
+
+## F2 contestuale (Dialog lookup)
+
+In SIRJ, F2 ha **due significati a seconda del focus**:
+
+- **Globale** (focus fuori da un campo lookup): apre la maschera successiva
+  (toolbar)
+- **Contestuale** (focus su un campo con icona Zoom adiacente,
+  es. `Cliente_cui_sped`): apre il **dialog di lookup** del campo
+  (es. dettaglio/ricerca cliente)
+
+L'`@v1.4.0`+ replica entrambi i comportamenti: lo userscript controlla se
+`document.activeElement` ha un fratello/cugino `input[type=image][src*="Zoom_icon"]`
+nei prossimi 6 livelli di parent. Se sì, F2 clicca quell'icona (NXJ apre il
+dialog). Altrimenti fallback su "Maschera successiva".
+
 ## Roadmap
 
 - [ ] Mappare anche Shift+F1, Shift+F2, Shift+F11 (se SIRJ li usa altrove)

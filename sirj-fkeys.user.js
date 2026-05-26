@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SIRJ F-key shortcuts
 // @namespace    arauto.local
-// @version      1.3.0
+// @version      1.4.0
 // @description  Ripristina F1-F12 di SIRJ in Chrome
 // @match        http://192.168.0.121:8180/*
 // @updateURL    https://raw.githubusercontent.com/federico-cyber/sirj-fkey-shortcuts/main/sirj-fkeys.user.js
@@ -16,6 +16,8 @@
 
   var TITLE_SEL = '[title]';
   var FRAMES_SEL = 'iframe, frame';
+  var ZOOM_SEL =
+    'input[type="image"][src*="Zoom_icon"]';
 
   var map = {
     'F1': 'Maschera precedente',
@@ -70,6 +72,25 @@
     var a = el.getAttribute('aria-disabled');
     if (a === 'true') return true;
     return false;
+  }
+
+  // F2 contestuale: se il focus è su un input
+  // dentro un DialogField (NXJ), F2 deve
+  // cliccare l'icona pic2Zoom adiacente (apre
+  // il dialog del cliente / lookup), invece di
+  // "Maschera successiva". Replica il
+  // comportamento IE-only di NXJ.
+  function findZoomNearFocus() {
+    var f = document.activeElement;
+    if (!f) return null;
+    if (f.tagName !== 'INPUT') return null;
+    var p = f.parentElement;
+    for (var i = 0; i < 6 && p; i++) {
+      var z = p.querySelector(ZOOM_SEL);
+      if (z && !isDisabled(z)) return z;
+      p = p.parentElement;
+    }
+    return null;
   }
 
   function beep() {
@@ -138,6 +159,18 @@
     var combo = e.shiftKey
       ? 'Shift+' + e.key
       : e.key;
+
+    // F2 contestuale: prima prova lookup
+    if (combo === 'F2') {
+      var zoom = findZoomNearFocus();
+      if (zoom) {
+        e.preventDefault();
+        e.stopPropagation();
+        zoom.click();
+        return;
+      }
+    }
+
     var base = map[combo];
     if (!base) return;
     e.preventDefault();
