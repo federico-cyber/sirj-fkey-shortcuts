@@ -1,9 +1,12 @@
 // ==UserScript==
 // @name         SIRJ F-key shortcuts
 // @namespace    arauto.local
-// @version      1.2.0
+// @version      1.3.0
 // @description  Ripristina F1-F12 di SIRJ in Chrome
 // @match        http://192.168.0.121:8180/*
+// @updateURL    https://raw.githubusercontent.com/federico-cyber/sirj-fkey-shortcuts/main/sirj-fkeys.user.js
+// @downloadURL  https://raw.githubusercontent.com/federico-cyber/sirj-fkey-shortcuts/main/sirj-fkeys.user.js
+// @supportURL   https://github.com/federico-cyber/sirj-fkey-shortcuts/issues
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==

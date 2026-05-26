@@ -5,6 +5,21 @@ gestionale **SIRJ** (framework Unify NXJ su JBoss) quando viene aperta in
 **Chrome moderno senza IE Mode**, permettendone l'uso su **macOS / Linux**
 senza più dover passare per Windows.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## Installazione (1 click, con auto-update)
+
+1. Installa [Tampermonkey](https://www.tampermonkey.net/) su Chrome
+2. Apri questo link nel browser dove vuoi installarlo:
+   <https://raw.githubusercontent.com/federico-cyber/sirj-fkey-shortcuts/main/sirj-fkeys.user.js>
+3. Tampermonkey intercetta il file `.user.js` e mostra la schermata di
+   installazione → click **"Installa"**
+4. Ricarica le tab SIRJ già aperte (Cmd+R / Ctrl+R)
+
+Da qui in poi Tampermonkey controlla automaticamente l'URL ogni ~24h e applica
+ogni nuova versione pushata su `main`. Per forzare un check manuale: dashboard
+Tampermonkey → click sullo script → tab "Settings" → "Check for updates".
+
 ## Problema risolto
 
 SIRJ è una webapp IE-era (HTML4 + `<input type="image">` con handler attaccati
@@ -51,6 +66,8 @@ Lo userscript:
 2. Per ogni combinazione F-key mappata, fa `preventDefault` + `stopPropagation`
 3. Cerca nel DOM il bottone NXJ corrispondente via attributo `title=`
 4. Chiama `.click()` su quel bottone — l'handler NXJ scatena l'azione
+5. Se il bottone è in stato `disabled`, emette **beep** (Web Audio API) +
+   **toast giallo** per 1.5s come feedback "azione non disponibile qui"
 
 I bottoni SIRJ hanno `title` che include il suffisso shortcut (es. `Trova (F3)`,
 `Salva (F9)`), quindi il selettore fa prefix matching:
@@ -80,34 +97,19 @@ I bottoni SIRJ hanno `title` che include il suffisso shortcut (es. `Trova (F3)`,
 - **F12 da solo** non è intercettabile in Chrome (riservato a DevTools).
   SIRJ usa solo `Shift+F12` per Stampa, quindi non è un problema.
 - **F11 da solo** in alcuni OS/browser è riservato al fullscreen. SIRJ non lo usa.
-- I bottoni in stato `disabled` (es. "Maschera successiva" quando sei
-  nell'ultima maschera) non reagiscono al click programmatico — comportamento
-  identico al click col mouse. Lo userscript emette un **beep + toast** di
-  feedback per indicare "azione non disponibile qui".
+- I bottoni in stato `disabled` non reagiscono al click programmatico
+  (comportamento identico al click col mouse). Lo userscript fornisce feedback
+  beep + toast in questi casi.
+- Sul **Mac**, di default i tasti F1–F12 sono media keys (luminosità, volume,
+  ecc.). Se non funzionano: **Impostazioni di sistema → Tastiera → Tasti
+  funzione** → attivare **"Usa i tasti F1, F2, ecc. come tasti funzione
+  standard"**. Da quel momento per luminosità/volume serve `Fn+F1`, `Fn+F12`.
 
-## Installazione
-
-### Prerequisiti
-
-- Chrome (testato su macOS, funziona anche Windows/Linux)
-- Estensione [Tampermonkey](https://www.tampermonkey.net/)
-
-### Installazione userscript
-
-1. Click sull'icona Tampermonkey → **Dashboard**
-2. Click **"+"** (Crea nuovo userscript)
-3. **Cancella tutto** il template di default (Cmd+A → Delete)
-4. **Copia e incolla** il contenuto di [`sirj-fkeys.user.js`](./sirj-fkeys.user.js)
-5. **Cmd+S** (o Ctrl+S) per salvare
-6. Verifica che lo switch a fianco dello script in Dashboard sia **verde**
-7. **Ricarica** ogni tab SIRJ già aperta (Cmd+R) — Tampermonkey inietta gli
-   userscript solo al caricamento, non su tab già aperte
-
-### Personalizzazione URL SIRJ
+## Personalizzazione URL SIRJ
 
 Lo userscript ha `@match http://192.168.0.121:8180/*` configurato per il
-server SIRJ di AR AUTO. Se il vostro server è su un altro IP/porta, modificare
-la riga `@match` di conseguenza. Esempi:
+server SIRJ di AR AUTO. Se il vostro server è su un altro IP/porta, fork
+della repo e modificare la riga `@match` di conseguenza. Esempi:
 
 ```
 @match http://sirj.azienda.local/*
